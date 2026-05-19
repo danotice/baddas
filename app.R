@@ -1,7 +1,9 @@
 library(shiny)
 library(bslib)
 library(markdown)
-library(safegen)
+# library(safegen)
+# to load functions locally instead of from package
+sapply(list.files("./safegen", full.names=TRUE), source)
 
 ## TODO:
 ## - Change theme for messaging about study success
