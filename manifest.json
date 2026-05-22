@@ -104,6 +104,38 @@
         "RemoteSha": "0.1-3"
       }
     },
+    "bsicons": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "bsicons",
+        "Title": "Easily Work with 'Bootstrap' Icons",
+        "Version": "0.1.2",
+        "Authors@R": "c(\n    person(\"Carson\", \"Sievert\", , \"carson@posit.co\", role = c(\"cre\", \"aut\"),\n           comment = c(ORCID = \"0000-0002-4958-2844\")),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")),\n    person(\"Mark\", \"Otto\", role = \"cph\",\n           comment = \"Bootstrap icons maintainer\")\n  )",
+        "Description": "Easily use 'Bootstrap' icons inside 'Shiny' apps and 'R\n    Markdown' documents. More generally, icons can be inserted in any\n    'htmltools' document through inline 'SVG'.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://github.com/rstudio/bsicons",
+        "BugReports": "https://github.com/rstudio/bsicons/issues",
+        "Depends": "R (>= 2.10)",
+        "Imports": "cli, htmltools, rlang, utils",
+        "Suggests": "bslib, processx, testthat, webshot2, withr",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-11-03 23:29:00 UTC; cpsievert",
+        "Author": "Carson Sievert [cre, aut] (<https://orcid.org/0000-0002-4958-2844>),\n  Posit Software, PBC [cph, fnd],\n  Mark Otto [cph] (Bootstrap icons maintainer)",
+        "Maintainer": "Carson Sievert <carson@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-11-04 00:30:05 UTC",
+        "Built": "R 4.5.3; ; 2026-05-14 17:25:39 UTC; windows",
+        "RemoteType": "standard",
+        "RemotePkgRef": "bsicons",
+        "RemoteRef": "bsicons",
+        "RemoteRepos": "https://cran.rstudio.com",
+        "RemoteSha": "0.1.2"
+      }
+    },
     "bslib": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1130,7 +1162,7 @@
       "checksum": "388259eca000c8a026eff6932a4c3280"
     },
     "app.R": {
-      "checksum": "907fb9784247a4142551594214fff186"
+      "checksum": "358d36a038febd9a2246a7a7abf04bc9"
     },
     "instructions.html": {
       "checksum": "c8c4c9f0bd968b634fd3a2ff4279ed8c"
