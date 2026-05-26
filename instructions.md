@@ -39,15 +39,17 @@ Set your study design and prior parameters, then click **Save Parameters**.
 - **Target assurance** — the desired probability of achieving the target width
 - **Futility assurance** — if assurance falls below this threshold at an interim, stop for futility
 - **Number of interims** — how many interim analyses are planned
+- **Accuracy measure** — parameter of interest: sensitivity, specificity, or both
 - **Priors** — beta hyperparameters (a, b) for sensitivity, specificity, and prevalence
 
 *Updating parameters will reset any analyses previously run.*
 
+*When the accuracy measure is **both** the calculations are notably slower to complete.*
 
 
 ### Start of Study
 
-Choose the accuracy measure (sensitivity, specificity, or both) and either calculate the planned sample size from your parameters or specify it manually.
+Either calculate the planned sample size from your parameters or specify it manually.
 Click **Start of Study Summary** to see the planned sample size and the timing of the first interim analysis.
 
 ### Interim Analyses

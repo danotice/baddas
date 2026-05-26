@@ -12,6 +12,9 @@ sapply(list.files("./safegen", full.names=TRUE), source)
 ## - Changing inputs on Start of Study after processing causes the output to be
 ##    greyed out until another button press
 ## - Include card to change interim timing mechanism
+## - add a way  to abandon operation
+## - add note that calculating the assurance (sample size re-estimation)
+##    for "both" is slower
 
 # Helper functions ------
 measures = c("sensitivity", "specificity", "both")
@@ -741,8 +744,21 @@ server <- function(input, output, session) {
         )
       )
     } else {
+      # warning for accuracy measure == both
+      params <- analysis_params_obj()
+      both_warning = if (params$measure == "both") {
+        div(class = "alert alert-warning", role = "alert",
+            icon("exclamation-triangle"),
+            "Both sensitivity and specificity are being considered.
+            Calculations may take a while."
+        )
+      } else {NULL}
+
       # Parameters saved - show enabled button
-      input_task_button("run_summary", "Start of Study Summary", class = "btn-success")
+      tagList(
+        both_warning,
+        input_task_button("run_summary", "Start of Study Summary", class = "btn-success")
+      )
     }
   })
 
@@ -1147,7 +1163,21 @@ server <- function(input, output, session) {
                           class = "btn-success btn-disabled-grey")
       )
     } else {
-      input_task_button("run_check", "Check Study Success", class = "btn-success")
+
+      # warning for accuracy measure == both
+      params <- analysis_params_obj()
+      both_warning = if (params$measure == "both") {
+        div(class = "alert alert-warning", role = "alert",
+            icon("exclamation-triangle"),
+            "Both sensitivity and specificity are being considered.
+            Calculations may take a while."
+        )
+      } else {NULL}
+
+      tagList(
+        both_warning,
+        input_task_button("run_check", "Check Study Success", class = "btn-success")
+      )
     }
   })
 
