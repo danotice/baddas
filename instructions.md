@@ -44,9 +44,6 @@ Set your study design and prior parameters, then click **Save Parameters**.
 
 *Updating parameters will reset any analyses previously run.*
 
-*When the accuracy measure is **both** the calculations are notably slower to complete.*
-
-
 ### Start of Study
 
 Either calculate the planned sample size from your parameters or specify it manually.

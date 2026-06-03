@@ -211,19 +211,46 @@ min_ss_sens_and_spec = function(a_lambda_design, b_lambda_design, a_lambda_analy
                                 a_theta_design,b_theta_design,a_theta_analysis, b_theta_analysis,
                                 a_rho, b_rho, target_width, alpha, n_T_range, target_assurance) {
 
-  ## this one isn't monotonically increasing, so need to search full range
-  assurances = lapply(as.list(n_T_range), assurance_sens_and_spec,
-                      a_lambda_design, b_lambda_design, a_lambda_analysis, b_lambda_analysis,
-                      a_theta_design, b_theta_design, a_theta_analysis, b_theta_analysis,
-                      a_rho, b_rho, target_width, alpha)
+  min_ss = NA_integer_
 
-  if (any(assurances>target_assurance)) {
-    min_ss = n_T_range[which.max(assurances>target_assurance)]
+  low = min(n_T_range)
+  high = max(n_T_range)
+
+  assurance_high = assurance_sens_and_spec(
+    high,
+    a_lambda_design, b_lambda_design, a_lambda_analysis, b_lambda_analysis,
+    a_theta_design, b_theta_design, a_theta_analysis, b_theta_analysis,
+    a_rho, b_rho, target_width, alpha)
+
+  if (assurance_high < target_assurance) {
+    # don't bother searching range - return na
   }
-  else{
-    min_ss = NA_integer_
+
+  else {
+
+    while (low <= high) {
+      mid = floor((low + high) / 2)
+
+      assurance = assurance_specificity(
+        mid,
+        a_lambda_design, b_lambda_design, a_lambda_analysis, b_lambda_analysis,
+        a_theta_design, b_theta_design, a_theta_analysis, b_theta_analysis,
+        a_rho, b_rho, target_width, alpha)
+
+      if (assurance >= target_assurance) {
+        min_ss = mid
+        high = mid - 1   # search smaller n
+      }
+      else {
+        low = mid + 1    # search larger n
+      }
+    }
+
   }
+
+
   return(min_ss)
+
 }
 
 
@@ -270,5 +297,22 @@ min_ss_specificity0 = function(a_theta_design,b_theta_design,a_theta_analysis, b
   return(min_ss)
 }
 
+min_ss_sens_and_spec0 = function(a_lambda_design, b_lambda_design, a_lambda_analysis, b_lambda_analysis,
+                                a_theta_design,b_theta_design,a_theta_analysis, b_theta_analysis,
+                                a_rho, b_rho, target_width, alpha, n_T_range, target_assurance) {
+
+  assurances = sapply(n_T_range, assurance_sens_and_spec,
+                      a_lambda_design, b_lambda_design, a_lambda_analysis, b_lambda_analysis,
+                      a_theta_design, b_theta_design, a_theta_analysis, b_theta_analysis,
+                      a_rho, b_rho, target_width, alpha)
+
+  if (any(assurances>target_assurance)) {
+    min_ss = n_T_range[which.max(assurances>target_assurance)]
+  }
+  else{
+    min_ss = NA_integer_
+  }
+  return(min_ss)
+}
 
 

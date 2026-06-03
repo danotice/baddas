@@ -746,17 +746,17 @@ server <- function(input, output, session) {
     } else {
       # warning for accuracy measure == both
       params <- analysis_params_obj()
-      both_warning = if (params$measure == "both") {
-        div(class = "alert alert-warning", role = "alert",
-            icon("exclamation-triangle"),
-            "Both sensitivity and specificity are being considered.
-            Calculations may take a while."
-        )
-      } else {NULL}
+      # both_warning = if (params$measure == "both") {
+      #   div(class = "alert alert-warning", role = "alert",
+      #       icon("exclamation-triangle"),
+      #       "Both sensitivity and specificity are being considered.
+      #       Calculations may take a while."
+      #   )
+      # } else {NULL}
 
       # Parameters saved - show enabled button
       tagList(
-        both_warning,
+        # both_warning,
         input_task_button("run_summary", "Start of Study Summary", class = "btn-success")
       )
     }
@@ -1166,16 +1166,16 @@ server <- function(input, output, session) {
 
       # warning for accuracy measure == both
       params <- analysis_params_obj()
-      both_warning = if (params$measure == "both") {
-        div(class = "alert alert-warning", role = "alert",
-            icon("exclamation-triangle"),
-            "Both sensitivity and specificity are being considered.
-            Calculations may take a while."
-        )
-      } else {NULL}
+      # both_warning = if (params$measure == "both") {
+      #   div(class = "alert alert-warning", role = "alert",
+      #       icon("exclamation-triangle"),
+      #       "Both sensitivity and specificity are being considered.
+      #       Calculations may take a while."
+      #   )
+      # } else {NULL}
 
       tagList(
-        both_warning,
+        # both_warning,
         input_task_button("run_check", "Check Study Success", class = "btn-success")
       )
     }

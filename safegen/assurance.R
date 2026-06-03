@@ -243,8 +243,8 @@ assurance_sens_and_spec = function(n_T,a_lambda_design, b_lambda_design,
     else{
       to_sum_inner2 = 0
     }
-    to_sum_outer[nT1 + 1] = sum(to_sum_inner1)*sum(to_sum_inner2)*choose(n_T, nT1)*
-      exp(lgamma_rho + lgamma(a_rho + nT1)+lgamma(b_rho+nT2)-lgamma(a_rho + b_rho + n_T))
+    to_sum_outer[nT1 + 1] = sum(to_sum_inner1)*sum(to_sum_inner2)*
+      exp(lchoose(n_T, nT1)+lgamma_rho + lgamma(a_rho + nT1)+lgamma(b_rho+nT2)-lgamma(a_rho + b_rho + n_T))
 
 
   }
