@@ -1,28 +1,3 @@
-## Overview
-
-This app supports the design and analysis of **diagnostic accuracy studies** with a 
-Bayesian adaptive design.
-
-**Study aim:** to estimate an accuracy measure (sensitivity and/or specificity) 
-to a desired degree of precision. The study is deemed successful if the width of 
-the central posterior credible interval for the specified measure(s) is below a 
-pre-specified target value.
-
-Users can set up a study, calculate suitable sample sizes, and perform interim and 
-final analyses on observed data. 
-Sample sizes are based on *assurance* -- the prior probability that the study will be successful.
-
-At the interim analyses, the Bayesian design allows 
-- sample size re-estimation 
-- early termination for efficacy or 
-- early termination for futility.
-
-The methods used in this app were developed in (Rachel Paper) and are implemented
-in the `safegen` R package.
-
-
----
-
 ## Workflow
 
 Parameters must be saved before using any other tab. 
@@ -31,27 +6,33 @@ After saving, the remaining tabs can be used in any order depending on the stage
 
 ### Parameters
 
-Set your study design and prior parameters, then click **Save Parameters**.
+Set your study design criteria and prior parameters, then click **Save Parameters**.
 
 - **Target width** — the maximum acceptable credible interval width for the study to be a success
-- **Alpha** — used to define the credible interval level (e.g. alpha = 0.05 gives a 95% CI)
+- **Alpha** — used to define the central two-sided $100(1-\alpha)\%$ credible interval
 - **Sample size range** — the minimum and maximum number of participants to recruit
 - **Target assurance** — the desired probability of achieving the target width
 - **Futility assurance** — if assurance falls below this threshold at an interim, stop for futility
 - **Number of interims** — how many interim analyses are planned
 - **Accuracy measure** — parameter of interest: sensitivity, specificity, or both
-- **Priors** — beta hyperparameters (a, b) for sensitivity, specificity, and prevalence
+- **Priors** — beta shape hyperparameters for sensitivity ($a_\lambda,b_\lambda$), 
+specificity ($a_\theta,b_\theta$), and prevalence ($a_\rho,b_\rho$)
 
 *Updating parameters will reset any analyses previously run.*
 
 ### Start of Study
 
-Either calculate the planned sample size from your parameters or specify it manually.
+The sample size can be calculated using assurance or specified manually.
 Click **Start of Study Summary** to see the planned sample size and the timing of the first interim analysis.
 
 ### Interim Analyses
-Enter observed counts from the 2x2 contingency table for each interim analysis.
-For analyses after the first interim, specify whether the data entered contains all patients or only new patients since the previous interim.
+Enter the observed counts from the $2\times2$ contingency table for each interim analysis.
+
+For analyses after the first interim, the counts are cumulative (includes all of 
+the participants since the beginning of the study). 
+The data can either be entered altogether or as two sets of entries -- new 
+participants since the previous analysis and the cumulative counts before this analysis.
+
 Click **Run Interim** to see whether to stop early for efficacy or futility, or continue with
 a re-estimated sample size.
 

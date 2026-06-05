@@ -349,6 +349,60 @@ ui <- page_sidebar(
   navset_card_tab(
     id = "main_tabs",
 
+    ## Tab - Instructions -----------
+    nav_panel(
+      "Instructions",
+      card(
+        #card_header("How to use this app"),
+        includeMarkdown("instructions0.md"),
+        hr(),
+        includeMarkdown("instructions.md"),
+        #hr(),
+        h5("Contingency Table"),
+        p("Below is the layout of a contingency table. Only the highlighted cells are requested."),
+        tags$table(
+          class = "table table-sm table-bordered",
+          style = "max-width: 500px;",
+          tags$thead(
+            tags$tr(
+              tags$th(""),
+              tags$th("Diseased"),
+              tags$th("Not diseased")
+            )
+          ),
+          tags$tbody(
+            tags$tr(
+              tags$td(strong("Test positive")),
+              tags$td(style = "background-color: #d4edda; color: #155724;",
+                      "True positives ", withMathJax("(\\(n_{11}\\))")),
+              tags$td("False positives")
+            ),
+            tags$tr(
+              tags$td(strong("Test negative")),
+              tags$td("False negatives"),
+              tags$td(style = "background-color: #d4edda; color: #155724;",
+                      "True negatives (\\(n_{22}\\))")
+            ),
+            tags$tr(
+              style = "border-top: 2px solid #dee2e6;",
+              tags$td(strong("Total")),
+              tags$td(style = "background-color: #d4edda; color: #155724;",
+                      "Total diseased (\\(n_{T1}\\))"),
+              tags$td(style = "background-color: #d4edda; color: #155724;",
+                      "Total not diseased (\\(n_{T2}\\))")
+            )
+          )
+        ),
+        tags$ul(
+          tags$li("The totals \\(n_{T1}\\) and \\(n_{T2}\\) are always needed."),
+          tags$li("Sensitivity is estimated from \\(n_{11}\\)."),
+          tags$li("Specificity is estimated from \\(n_{22}\\).")
+        ),
+        fill = FALSE
+
+      )
+    ),
+
     ## Tab - set study parameters ----------
     nav_panel(
       "Parameters",
@@ -521,57 +575,7 @@ ui <- page_sidebar(
 
     ),
 
-    ## Tab - Instructions -----------
-    nav_panel(
-      "Instructions",
-      card(
-        #card_header("How to use this app"),
-        includeMarkdown("instructions.md"),
-        hr(),
-        h5("Contingency Table"),
-        p("Below is the layout of a contingency table. Only the highlighted cells are requested."),
-        tags$table(
-          class = "table table-sm table-bordered",
-          style = "max-width: 500px;",
-          tags$thead(
-            tags$tr(
-              tags$th(""),
-              tags$th("Diseased"),
-              tags$th("Not diseased")
-            )
-          ),
-          tags$tbody(
-            tags$tr(
-              tags$td(strong("Test positive")),
-              tags$td(style = "background-color: #d4edda; color: #155724;",
-                      "True positives ", withMathJax("(\\(n_{11}\\))")),
-              tags$td("False positives")
-            ),
-            tags$tr(
-              tags$td(strong("Test negative")),
-              tags$td("False negatives"),
-              tags$td(style = "background-color: #d4edda; color: #155724;",
-                      "True negatives (\\(n_{22}\\))")
-            ),
-            tags$tr(
-              style = "border-top: 2px solid #dee2e6;",
-              tags$td(strong("Total")),
-              tags$td(style = "background-color: #d4edda; color: #155724;",
-                      "Total diseased (\\(n_{T1}\\))"),
-              tags$td(style = "background-color: #d4edda; color: #155724;",
-                      "Total not diseased (\\(n_{T2}\\))")
-            )
-          )
-        ),
-        tags$ul(
-          tags$li("The totals \\(n_{T1}\\) and \\(n_{T2}\\) are always needed."),
-          tags$li("Sensitivity is estimated from \\(n_{11}\\)."),
-          tags$li("Specificity is estimated from \\(n_{22}\\).")
-        ),
-        fill = FALSE
 
-      )
-    )
   )
 )
 
