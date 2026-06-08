@@ -42,32 +42,40 @@ create_beta_prior <- function(a, b) {
 study_details <- function(analysis_params, measure) {
   ap <- analysis_params
 
-  lines <- c(
+  lines <- list(
     # max n
     paste0("No more than ", ap$max_n, " patients should be recruited for this study.")
   )
 
   # Success criteria line
-  if (measure == "sensitivity" | measure == "specificity") {
-    lines <- c(lines, paste0(
-      "The study is a success if the ", (1 - ap$alpha) * 100,
-      "% credible interval for ", measure,
-      " has a width < ", ap$target_width, "."
-    ))
+  if (measure == "sensitivity") {
+    criteria <- list(span(withMathJax(paste0(
+      "The study is a success if the central two-sided ", (1 - ap$alpha) * 100,
+      "% credible interval for sensitivity at analysis \\(i \\,\\, (\\lambda_L^{(i)},\\lambda_U^{(i)}) \\,\\, \\) ",
+      "  has a width \\( w_\\lambda^{(i)} = \\lambda_U^{(i)} - \\lambda_L^{(i)} < \\quad \\) ", ap$target_width, "."
+    ))))
+  } else if (measure == "specificity") {
+    criteria <- list(span(withMathJax(paste0(
+      "The study is a success if the central two-sided ", (1 - ap$alpha) * 100,
+      "% credible interval for specificity at analysis \\(i \\,\\, (\\theta_L^{(i)},\\theta_U^{(i)}) \\,\\, \\) ",
+      "  has a width \\( w_\\theta^{(i)} = \\theta_U^{(i)} - \\theta_L^{(i)} < \\quad \\) ", ap$target_width, "."
+    ))))
   } else if (measure == "both") {
-    lines <- c(lines, paste0(
-      "The study is a success if the joint ", (1 - ap$alpha) * 100,
-      "% credible interval for both sensitivity and specificity has a width < ",
+    #lines <- c(lines, paste0(
+    criteria <- list(span(withMathJax(paste0(
+      "The study is a success if, at analysis \\(i \\,\\, \\),  the central two-sided ", (1 - ap$alpha) * 100,
+      "% credible intervals for both sensitivity \\( (\\lambda_L^{(i)},\\lambda_U^{(i)}) \\,\\, \\) and specificity \\( (\\theta_L^{(i)},\\theta_U^{(i)}) \\,\\, \\) have widths < ",
       ap$target_width, "."
-    ))
+    ))))
   }
 
+  lines <- c(lines, criteria)
 
   lines <- c(lines,
     # early stopping
     paste0("If this is achieved at any of the interim analyses, the study can stop
     early for efficacy."),
-    paste0("If at any of the interim analyses the assurance is < ",
+    paste0("If at any of the interim analyses the assurance is less than ",
            ap$futility_assurance, ", success is unlikely and the study can be
            stopped early for futility.")
     )
@@ -858,7 +866,7 @@ server <- function(input, output, session) {
     interim_subtitle <- if (params$num_interims > 1) {
       remaining <- params$num_interims - 1
       p(paste0("Sample size for the remaining ", remaining,
-               " analys", if (remaining > 1) "es" else "is",
+               " interim analys", if (remaining > 1) "es" else "is",
                " will be recalculated."),
         class = "text-muted small")
     } else if (is.na(first_interim)) {
@@ -894,7 +902,7 @@ server <- function(input, output, session) {
           theme = "secondary"
         )
       ),
-      h5("Details", style = "margin-top: 1.5rem;"),
+      h5("Study Details", style = "margin-top: 1.5rem;"),
       tags$ul(lapply(details, tags$li))
     )
   })
