@@ -8,13 +8,13 @@ After saving, the remaining tabs can be used in any order depending on the stage
 
 Set your study design criteria and prior parameters, then click **Save Parameters**.
 
+- **Accuracy measure** — parameter of interest: sensitivity, specificity, or both
 - **Target width** — the maximum acceptable credible interval width for the study to be a success
 - **Alpha** — used to define the central two-sided $100(1-\alpha)\%$ credible interval
 - **Sample size range** — the minimum and maximum number of participants to recruit
 - **Target assurance** — the desired probability of achieving the target width
 - **Futility assurance** — if assurance falls below this threshold at an interim, stop for futility
 - **Number of interims** — how many interim analyses are planned
-- **Accuracy measure** — parameter of interest: sensitivity, specificity, or both
 - **Priors** — beta shape hyperparameters for sensitivity ($a_\lambda,b_\lambda$), 
 specificity ($a_\theta,b_\theta$), and prevalence ($a_\rho,b_\rho$)
 

@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyWidgets)
 library(bslib)
 library(markdown)
 # library(safegen)
@@ -333,6 +334,14 @@ ui <- page_sidebar(
     "))
   ),
 
+  tags$head(
+    tags$style(HTML("
+    .MathJax {
+      font-size: 0.9em !important;
+    }
+  "))
+  ),
+
   ## Sidebar - display saved parameters -----------
   sidebar = sidebar(
     h4("Current Parameters"),
@@ -411,17 +420,26 @@ ui <- page_sidebar(
         #  card_header("Study Design Parameters"),
         h4("Study Design Paramaters"),
 
+        card(
+          card_header("Accuracy Measure"),
+          radioButtons("measure", NULL, choices = measures, selected = character(),
+                       inline = TRUE),
+          fill = FALSE
+        ),
+
         # Study Design Parameters
         layout_columns(
           col_widths = c(6, 6),
           numericInput("target_width", param_info("Target Width", "The maximum acceptable credible interval width for the study to be a success."),
                        value = 0.2, min = 0, step = 0.01),
-          numericInput("alpha", param_info("Alpha","For the credible interval level"),
+          numericInput("alpha", param_info("Alpha", withMathJax("Used to define the central two-sided \\(100(1-\\alpha)\\%\\) credible interval")),
                        value = 0.05, min = 0, max = 1, step = 0.01)
         ),
 
-        sliderInput("n_range", param_info("Sample Size Range","The minimum and maximum number of participants to recruit."),
-                    min = 0, max = 2000, value = c(100, 800), step = 10),
+        # sliderInput("n_range", param_info("Sample Size Range","The minimum and maximum number of participants to recruit."),
+        #             min = 0, max = 2000, value = c(100, 800), step = 1),
+        numericRangeInput("n_range", param_info("Sample Size Range","The minimum and maximum number of participants to recruit."),
+                          min = 0, max = 2000, value = c(100, 800), step = 1),
         # numericInput("max_n", "Maximum N:", value = 800, min = 1, step = 10),
         # numericInput("min_n", "Minimum N:", value = 100, min = 1, step = 10),
 
@@ -438,57 +456,56 @@ ui <- page_sidebar(
         fill = FALSE
       ),
 
-      card(
-        card_header("Accuracy Measure"),
-        radioButtons("measure", NULL, choices = measures, selected = character(),
-                     inline = TRUE),
-        fill = FALSE
-      ),
 
       # Prior Parameters
       card(
-        h4(param_info("Beta Priors - Hyperparameters", "")),
+        h4(param_info("Beta Priors - Hyperparameters",
+                      "Specify shape and rate hyperparameters for all model parameters.")),
 
         accordion(
           open = "Prevalence",
 
           accordion_panel(
-            "Sensitivity",
-            h6("Design Prior"),
+            "Sensitivity \\( (\\lambda) \\)",
+            h6(param_info("Design Prior",
+                  "\\( \\pi_D(\\lambda) = \\text{Beta}(\\lambda | a_\\lambda^D, b_\\lambda^D) \\)  ")),
             layout_columns(
               col_widths = c(6, 6),
-              numericInput("sens_design_a", "a:", value = 7, min = 0, step = 1),
-              numericInput("sens_design_b", "b:", value = 3, min = 0, step = 1)
+              numericInput("sens_design_a", "\\(a_\\lambda^D\\) :", value = 7, min = 0, step = 1),
+              numericInput("sens_design_b", "\\(b_\\lambda^D\\) :", value = 3, min = 0, step = 1)
             ),
-            h6("Analysis Prior"),
+            h6(param_info("Analysis Prior",
+                  "\\( \\pi_A(\\lambda) = \\text{Beta}(\\lambda | a_\\lambda^A, b_\\lambda^A) \\)")),
             layout_columns(
               col_widths = c(6, 6),
-              numericInput("sens_analysis_a", "a:", value = 1, min = 0, step = 1),
-              numericInput("sens_analysis_b", "b:", value = 1, min = 0, step = 1)
+              numericInput("sens_analysis_a", "\\(a_\\lambda^A\\) :", value = 1, min = 0, step = 1),
+              numericInput("sens_analysis_b", "\\(b_\\lambda^A\\) :", value = 1, min = 0, step = 1)
             )
           ),
           accordion_panel(
-            "Specificity",
-            h6("Design Prior"),
+            "Specificity \\( (\\theta) \\)",
+            h6(param_info("Design Prior",
+                          "\\( \\pi_D(\\theta) = \\text{Beta}(\\theta | a_\\theta^D, b_\\theta^D) \\)  ")),
             layout_columns(
               col_widths = c(6, 6),
-              numericInput("spec_design_a", "a:", value = NA, min = 0, step = 1),
-              numericInput("spec_design_b", "b:", value = NA, min = 0, step = 1)
+              numericInput("spec_design_a", "\\(a_\\theta^D\\) :", value = NA, min = 0, step = 1),
+              numericInput("spec_design_b", "\\(b_\\theta^D\\) :", value = NA, min = 0, step = 1)
             ),
-            h6("Analysis Prior"),
+            h6(param_info("Analysis Prior",
+                          "\\( \\pi_A(\\theta) = \\text{Beta}(\\theta | a_\\theta^A, b_\\theta^A) \\)")),
             layout_columns(
               col_widths = c(6, 6),
-              numericInput("spec_analysis_a", "a:", value = 1, min = 0, step = 1),
-              numericInput("spec_analysis_b", "b:", value = 1, min = 0, step = 1)
+              numericInput("spec_analysis_a", "\\(a_\\theta^A\\) :", value = 1, min = 0, step = 1),
+              numericInput("spec_analysis_b", "\\(b_\\theta^A\\) :", value = 1, min = 0, step = 1)
             )
           ),
           accordion_panel(
-            "Prevalence",
+            "Prevalence \\( (\\rho) \\)",
             #h6("Prior"),
             layout_columns(
               col_widths = c(6, 6),
-              numericInput("prev_design_a", "a:", value = 2, min = 0, step = 1),
-              numericInput("prev_design_b", "b:", value = 8, min = 0, step = 1)
+              numericInput("prev_design_a", "\\(a_\\rho\\) :", value = 2, min = 0, step = 1),
+              numericInput("prev_design_b", "\\(b_\\rho\\) :", value = 8, min = 0, step = 1)
             )
           )
         ),
@@ -626,7 +643,7 @@ server <- function(input, output, session) {
         need(!is.na(input$measure), "An accuracy measure must be specified."),
         need(length(length(base_params$sens_design_prior) > 0),
              "Prevalence design prior must be specified."),
-        need(input$n_range[1] > 0, "Minimum sample size cannot be 0.")
+        # need(input$n_range[1] > 0, "Minimum sample size cannot be 0.")
       )
 
       validate(
@@ -662,6 +679,34 @@ server <- function(input, output, session) {
       return(div(style = "color: red; font-size: 0.85em;", params))
     }
 
+    sens_priors = if (params$measure == "specificity") {NULL} else {
+      div(class = "mb-3",
+          strong("Sensitivity Priors"),
+          tags$ul(class = "list-unstyled small ms-2",
+                  tags$li(ifelse(length(params$sens_design_prior) > 0,
+                                 sprintf("Design: Beta(%.1f, %.1f)", input$sens_design_a, input$sens_design_b),
+                                 "Design: Not specified")),
+                  tags$li(ifelse(length(params$sens_analysis_prior) > 0,
+                                 sprintf("Analysis: Beta(%.1f, %.1f)", input$sens_analysis_a, input$sens_analysis_b),
+                                 "Analysis: Not specified"))
+          )
+      )
+    }
+
+    spec_priors = if (params$measure == "sensitivity") {NULL} else {
+      div(class = "mb-3",
+          strong("Specificity Priors"),
+          tags$ul(class = "list-unstyled small ms-2",
+                  tags$li(ifelse(length(params$spec_design_prior) > 0,
+                                 sprintf("Design: Beta(%.1f, %.1f)", input$spec_design_a, input$spec_design_b),
+                                 "Design: Not specified")),
+                  tags$li(ifelse(length(params$spec_analysis_prior) > 0,
+                                 sprintf("Analysis: Beta(%.1f, %.1f)", input$spec_analysis_a, input$spec_analysis_b),
+                                 "Analysis: Not specified"))
+          )
+      )
+    }
+
     tagList(
       div(class = "mb-3",
           strong("Study Design"),
@@ -682,34 +727,16 @@ server <- function(input, output, session) {
                   tags$li(sprintf(tools::toTitleCase(params$measure)))
           )
       ),
-      div(class = "mb-3",
-          strong("Sensitivity Priors"),
-          tags$ul(class = "list-unstyled small ms-2",
-                  tags$li(ifelse(length(params$sens_design_prior) > 0,
-                                 sprintf("Design: Beta(%.1f, %.1f)", input$sens_design_a, input$sens_design_b),
-                                 "Design: Not specified")),
-                  tags$li(ifelse(length(params$sens_analysis_prior) > 0,
-                                 sprintf("Analysis: Beta(%.1f, %.1f)", input$sens_analysis_a, input$sens_analysis_b),
-                                 "Analysis: Not specified"))
-          )
-      ),
-      div(class = "mb-3",
-          strong("Specificity Priors"),
-          tags$ul(class = "list-unstyled small ms-2",
-                  tags$li(ifelse(length(params$spec_design_prior) > 0,
-                                 sprintf("Design: Beta(%.1f, %.1f)", input$spec_design_a, input$spec_design_b),
-                                 "Design: Not specified")),
-                  tags$li(ifelse(length(params$spec_analysis_prior) > 0,
-                                 sprintf("Analysis: Beta(%.1f, %.1f)", input$spec_analysis_a, input$spec_analysis_b),
-                                 "Analysis: Not specified"))
-          )
-      ),
+
+      sens_priors,
+      spec_priors,
+
       div(class = "mb-3",
           strong("Prevalence Prior"),
           tags$ul(class = "list-unstyled small ms-2",
                   tags$li(ifelse(length(params$prevalence_design_prior) > 0,
-                                 sprintf("Design: Beta(%.1f, %.1f)", input$prev_design_a, input$prev_design_b),
-                                 "Design: Not specified"))
+                                 sprintf("Beta(%.1f, %.1f)", input$prev_design_a, input$prev_design_b),
+                                 "Not specified"))
           )
       )
     )
