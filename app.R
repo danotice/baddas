@@ -103,9 +103,11 @@ data_validate <- function(measure, n11, n22, nT1, nT2) {
 }
 
 
-data_input_card = function(tab, header="Input Data", new_data=FALSE){
+data_input_card = function(tab, header="Input Data", new_data=FALSE, details=NA){
+
+  details =  if (is.na(details)) "Observed count data from contingency table" else details
   card(
-    card_header(param_info(header, "Observed count data from contingency table")),
+    card_header(param_info(header, details)),
     # p("Enter observed counts from the 2x2 table.", class = "text-muted small"),
     layout_columns(
       col_widths = c(6, 6),
@@ -965,7 +967,8 @@ server <- function(input, output, session) {
           req(input[[new_data_id]])
 
           if (input[[new_data_id]] == "new") {
-            data_input_card(paste0("_prev", i), header = "Previous Data")
+            data_input_card(paste0("_prev", i), header = "Previous Data",
+                            details = "Cumulative count data from all previous interims")
           }
         })
       }
