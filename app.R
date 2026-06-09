@@ -118,9 +118,9 @@ data_input_card = function(tab, header="Input Data", new_data=FALSE){
     layout_columns(
       col_widths = c(6, 6),
       numericInput(paste0("n22",tab),
-                   param_info(withMathJax("True negatives (\\(n_{22}\\))"),"Test negative, no disease "),
+                   param_info(withMathJax("True negatives (\\(n_{22}\\))"),"Test negative, without disease "),
                    value = 58, min = 0, step = 1),
-      numericInput(paste0("nT2",tab), "Total no disease (\\(n_{T2}\\))",
+      numericInput(paste0("nT2",tab), "Total without disease (\\(n_{T2}\\))",
                    value = 76, min = 0, step = 1)
     ),
 
@@ -144,6 +144,20 @@ data_display = function(data, header="Observed Data" ){
   nT1 = data$nT1
   nT2 = data$nT2
 
+  if (is.na(n11)) {
+    n11 = "?"
+    n1T = "?"
+  } else {
+    n1T = nT1 - n11
+  }
+
+  if (is.na(n22)) {
+    n22 = "?"
+    n2T = "?"
+  } else {
+    n2T = nT2 - n22
+  }
+
   card(
     card_header(header),
     div(
@@ -160,11 +174,11 @@ data_display = function(data, header="Observed Data" ){
           tags$tr(
             tags$td("Test positive"),
             tags$td(n11),
-            tags$td(nT2 - n22)
+            tags$td(n2T)
           ),
           tags$tr(
             tags$td("Test negative"),
-            tags$td(nT1 - n11),
+            tags$td(n1T),
             tags$td(n22)
           ),
           tags$tr(
@@ -175,7 +189,7 @@ data_display = function(data, header="Observed Data" ){
         )
       ),
 
-      p("Total sample size: ", strong(nT1 + nT2))
+      p("Current total sample size: ", strong(nT1 + nT2))
     ),
     fill = FALSE
   )
@@ -1055,8 +1069,9 @@ server <- function(input, output, session) {
 
         details <- div(
           if (result$stop_for_efficacy) {
-            p(sprintf("CI width of %.3f is below the target of %.3f. No further recruitment necessary.",
-                      result$final_width, r$target_width))
+            p(sprintf(
+              "CI width of %.3f is below the target of %.3f. No further recruitment necessary.",
+                      result$final_width, params$target_width))
 
           } else if (result$stop_for_futility) {
             p(sprintf("Based on existing data, it will not be possible to achieve
@@ -1064,8 +1079,9 @@ server <- function(input, output, session) {
                       params$max_n))
 
           } else {
+            rem_interims = params$num_interims - i
             tagList(
-              p(sprintf("The re-estimated total planned sample size is %d.",
+              p(sprintf("The re-estimated total sample size is %d.",
                         current_n + result$additional_n)),
 
               # lower assurance message
@@ -1076,19 +1092,37 @@ server <- function(input, output, session) {
               },
 
               # next interim analysis message
-              if (params$num_interims - i > 0) {
+              if (rem_interims > 0) {
                 # assuming even spacing
-                interims <- interim_timings(result$additional_n, params$num_interims - i)
+                interims <- interim_timings(result$additional_n, rem_interims)
                 #params$interim_timing)
 
-                p(sprintf("The next interim analysis should take place after recruiting
-                        %d new participants.", interims$interims_at[1]))
+                if (rem_interims == 1) {
+                  tagList(
+                    p("1 planned interim analysis remaining."),
+                    p(sprintf("This interim analysis should take place halfway through the remaining recruitment
+                      - after recruiting %d additional participants.", interims$interims_at[1]))
+                  )
+                } else {
+                  tagList(
+                    p(sprintf("%d planned interim analyses remaining,
+                      which are to be evenly spaced throughout the remaining recruitment.", rem_interims)),
+                    p(sprintf("The next interim analysis should take place after recruiting
+                          %d additional participants.", interims$interims_at[1]))
+                  )
+                }
+              } else {
+                tagList(
+                  p("There are no remaining interim analyses."),
+                  p("The end of study analysis should be conducted after completing the additional recruitment.")
+                )
+
               }
             )
           },
 
-          hr(),
-          ci_details
+          #hr(),
+          #ci_details
         )
 
         tagList(
@@ -1097,7 +1131,8 @@ server <- function(input, output, session) {
             col_widths = c(6,6),
             status_box,
             details
-          )
+          ),
+          ci_details
         )
       })
 
